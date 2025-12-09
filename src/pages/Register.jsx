@@ -18,6 +18,11 @@ const Register = () => {
   const onSubmit = (data) => {
     registerUser(data.email, data.password)
       .then(() => {
+        fetch(`${import.meta.env.VITE_SERVER_URL}/api/users`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email: data.email }),
+        });
         Swal.fire({
           icon: "success",
           title: "Registration Successful",
@@ -54,9 +59,7 @@ const Register = () => {
           {...register("password", { required: true, minLength: 6 })}
         />
         {errors.password && (
-          <p className="text-red-600">
-            Password must be at least 6 characters
-          </p>
+          <p className="text-red-600">Password must be at least 6 characters</p>
         )}
 
         <button className="btn btn-primary w-full">Register</button>
