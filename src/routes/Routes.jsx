@@ -1,27 +1,40 @@
-import { Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import PrivateRoute from "./components/PrivateRoute";
+import { createBrowserRouter } from "react-router";
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+import Home from "../pages/Home.jsx";
+import Login from "../pages/Login.jsx";
+import Register from "../pages/Register.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
 
-      <Route
-        path="/dashboard"
-        element={
+const router = createBrowserRouter([
+  {
+    path: "/",
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+
+      {
+        path: "login",
+        Component: Login,
+      },
+
+      {
+        path: "register",
+        Component: Register,
+      },
+
+      {
+        path: "dashboard",
+        element: (
           <PrivateRoute>
             <h2 className="text-center mt-10">Private Dashboard</h2>
           </PrivateRoute>
-        }
-      />
-    </Routes>
-  );
-}
+        ),
+      },
+    ],
+  },
+]);
 
-export default App;
+export default router;
