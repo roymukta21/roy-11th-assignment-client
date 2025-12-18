@@ -5,7 +5,8 @@ import Home from "../pages/Home.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout.jsx";
-//import PrivateRoute from "./PrivateRoute.jsx";
+import Meals from "../pages/Meals.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 
 const router = createBrowserRouter([
@@ -25,15 +26,20 @@ const router = createBrowserRouter([
         path: "/register",
         Component: Register,
       },
+      {
+        path:"/Meals",
+        Component: Meals
+      },
 
-      // {
-      //   path: "/dashboard",
-      //   element: (
-      //     <PrivateRoute>
-      //       <h2 className="text-center mt-10">Private Dashboard</h2>
-      //     </PrivateRoute>
-      //   ),
-      // },
+
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <h2 className="text-center mt-10">Private Dashboard</h2>
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ]);
