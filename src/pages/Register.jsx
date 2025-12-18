@@ -1,78 +1,167 @@
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import useAuth from "../hooks/useAuth";
-import useTitle from "../hooks/useTitle";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router";
+import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
+import { auth } from "../firebase/firebase.config";
 
-const Register = () => {
-  useTitle("Register");
-  const { registerUser } = useAuth();
+export default function Signup() {
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  // const [ setPassword, showPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const googleProvider = new GoogleAuthProvider();
 
-  const onSubmit = (data) => {
-    registerUser(data.email, data.password)
-      .then(() => {
-        fetch(`${import.meta.env.VITE_SERVER_URL}/api/users`, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ email: data.email }),
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const name = e.target.name.value.trim();
+    const photoURL = e.target.photo.value.trim();
+    const email = e.target.email.value.trim();
+    // Use the state password, not a new local variable
+    const userPassword = password;
+
+    // Password validation
+    if (
+      !/[A-Z]/.test(userPassword) ||
+      !/[a-z]/.test(userPassword) ||
+      !/[0-9]/.test(userPassword) ||
+      userPassword.length < 6
+    ) {
+      setError(
+        "Password must contain uppercase, lowercase, number and be at least 6 characters long."
+      );
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        userPassword
+      );
+
+      // Only update profile if name or photoURL exist
+      if (name || photoURL) {
+        await updateProfile(userCredential.user, {
+          displayName: name,
+          photoURL,
         });
-        Swal.fire({
-          icon: "success",
-          title: "Registration Successful",
-        });
-        navigate("/");
-      })
-      .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Registration Failed",
-        });
-      });
+      }
+
+      toast.success("Signup successful! Welcome aboard 💫");
+
+      // Redirect to the page the user originally tried to access
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      toast.success("Signed in with Google!");
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-8 rounded-lg shadow-md w-96"
-      >
-        <h2 className="text-2xl font-bold mb-5 text-center">Register</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-blue-100">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6 text-primary">
+          Create an Account
+        </h2>
 
-        <input
-          className="input input-bordered w-full mb-3"
-          placeholder="Email"
-          {...register("email", { required: true })}
-        />
-        {errors.email && <p className="text-red-600">Email is required</p>}
+        <form onSubmit={handleSignup} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+            className="w-full border rounded px-3 py-2 
+             text-gray-900 placeholder-gray-500 
+             dark:bg-gray-800 dark:text-gray-100 
+             dark:placeholder-gray-400 dark:border-gray-600
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <input
+            type="text"
+            name="photo"
+            placeholder="Photo URL"
+            required
+            className="w-full border rounded px-3 py-2 
+             text-gray-900 placeholder-gray-500 
+             dark:bg-gray-800 dark:text-gray-100 
+             dark:placeholder-gray-400 dark:border-gray-600
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            className="w-full border rounded px-3 py-2 
+             text-gray-900 placeholder-gray-500 
+             dark:bg-gray-800 dark:text-gray-100 
+             dark:placeholder-gray-400 dark:border-gray-600
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <div className="relative">
+            <input
+              required
+              type={showPass ? "text" : "password"}
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full border rounded px-3 py-2 
+             text-gray-900 placeholder-gray-500 
+             dark:bg-gray-800 dark:text-gray-100 
+             dark:placeholder-gray-400 dark:border-gray-600
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute right-2 top-2 text-sm text-primary"
+            >
+              {showPass ? "Hide" : "Show"}
+            </button>
+          </div>
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+          <button
+            type="submit"
+            className="btn w-full bg-accent-content hover:bg-green-300 text-white"
+          >
+            Register
+          </button>
+        </form>
 
-        <input
-          type="password"
-          className="input input-bordered w-full mb-3"
-          placeholder="Password (min 6 characters)"
-          {...register("password", { required: true, minLength: 6 })}
-        />
-        {errors.password && (
-          <p className="text-red-600">Password must be at least 6 characters</p>
-        )}
+        <button
+          onClick={handleGoogleSignup}
+          className="btn w-full mt-4 bg-accent"
+        >
+          <FcGoogle /> Continue with Google
+        </button>
 
-        <button className="btn btn-primary w-full">Register</button>
-
-        <p className="text-center mt-4">
+        <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 underline">
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login
           </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
-};
-
-export default Register;
+}

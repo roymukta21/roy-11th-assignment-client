@@ -1,38 +1,39 @@
-import { createBrowserRouter } from "react-router";
-
-import Home from "../pages/Home.jsx";
+//import { createBrowserRouter } from "react-router";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
-import PrivateRoute from "./PrivateRoute.jsx";
+import Home from "../pages/Home.jsx";
+import ErrorPage from "../pages/ErrorPage.jsx";
+import { createBrowserRouter } from "react-router";
+import RootLayout from "../layouts/RootLayout.jsx";
+//import PrivateRoute from "./PrivateRoute.jsx";
 
 
 const router = createBrowserRouter([
   {
     path: "/",
+    Component: RootLayout,
+    errorElement: <ErrorPage/>,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
+      { index: true, Component: Home },
 
       {
-        path: "login",
+        path: "/login",
         Component: Login,
       },
 
       {
-        path: "register",
+        path: "/register",
         Component: Register,
       },
 
-      {
-        path: "dashboard",
-        element: (
-          <PrivateRoute>
-            <h2 className="text-center mt-10">Private Dashboard</h2>
-          </PrivateRoute>
-        ),
-      },
+      // {
+      //   path: "/dashboard",
+      //   element: (
+      //     <PrivateRoute>
+      //       <h2 className="text-center mt-10">Private Dashboard</h2>
+      //     </PrivateRoute>
+      //   ),
+      // },
     ],
   },
 ]);

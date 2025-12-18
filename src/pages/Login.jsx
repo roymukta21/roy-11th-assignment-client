@@ -1,8 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { auth } from "../firebase.init.js/firebase.init";
 import { GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Link, useNavigate } from "react-router";
+import { auth } from "../firebase/firebase.config";
 
 export default function Login() {
   const [email, setEmail] = useState("");
