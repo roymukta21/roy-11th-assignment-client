@@ -92,7 +92,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <img className="w-8" src="/public/localChefBazaar.png" alt="logo" />
+            <img className="w-8" src="/localChefBazaar.png" alt="logo" />
             <span className="text-xl font-bold text-gray-800">
               LocalChefBazaar
             </span>

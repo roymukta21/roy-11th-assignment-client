@@ -7,6 +7,8 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout.jsx";
 import Meals from "../pages/Meals.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
+import Profile from "../pages/Profile.jsx";
+import OrderConfirm from "../pages/OrderConfirm.jsx";
 
 
 const router = createBrowserRouter([
@@ -30,13 +32,24 @@ const router = createBrowserRouter([
         path:"/Meals",
         Component: Meals
       },
-
+      {
+        path: "/Profile",
+        Component: Profile
+      },
 
       {
         path: "/dashboard",
         element: (
           <PrivateRoute>
             <h2 className="text-center mt-10">Private Dashboard</h2>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/order/:id",
+        element: (
+          <PrivateRoute>
+           <OrderConfirm/>
           </PrivateRoute>
         ),
       },
