@@ -83,6 +83,3 @@ export default function OrderRequests() {
   );
 }
 
-/* ================= ROUTES =================
-Private Route: /dashboard/chef/orders
-========================================= */

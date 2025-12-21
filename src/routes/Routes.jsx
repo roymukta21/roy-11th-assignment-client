@@ -1,4 +1,3 @@
-//import { createBrowserRouter } from "react-router";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
 import Home from "../pages/Home.jsx";
@@ -7,15 +6,14 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout.jsx";
 import Meals from "../pages/Meals.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
+import DashboardLayout from "../pages/dashboard/DashboardLayout.jsx";
 import Profile from "../pages/Profile.jsx";
-import OrderConfirm from "../pages/OrderConfirm.jsx";
-
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
-    errorElement: <ErrorPage/>,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
 
@@ -29,29 +27,46 @@ const router = createBrowserRouter([
         Component: Register,
       },
       {
-        path:"/Meals",
-        Component: Meals
+        path: "/Meals",
+        Component: Meals,
       },
-      {
-        path: "/Profile",
-        Component: Profile
-      },
-
       {
         path: "/dashboard",
         element: (
           <PrivateRoute>
-            <h2 className="text-center mt-10">Private Dashboard</h2>
+            <DashboardLayout />
           </PrivateRoute>
         ),
-      },
-      {
-        path: "/order/:id",
-        element: (
-          <PrivateRoute>
-           <OrderConfirm/>
-          </PrivateRoute>
-        ),
+        children: [
+          // {
+          //   index: true,
+          //   element: <Dash
+          // },
+          {
+            path: "Profile",
+            element: <Profile></Profile>
+          },
+          // {
+          //   path: "manage-decorators",
+          //   element: <>,
+          // },
+          // {
+          //   path: "add-services",
+          //   element: <h3 className="text-center mt-6">Add Services</h3>,
+          // },
+          // {
+          //   path: "manage-services",
+          //   element: <h3 className="text-center mt-6">Manage Services</h3>,
+          // },
+          // {
+          //   path: "manage-bookings",
+          //   element: <h3 className="text-center mt-6">Manage Bookings</h3>,
+          // },
+          // {
+          //   path: "assign-decorator",
+          //   element: <h3 className="text-center mt-6">Assign Decorator</h3>,
+          // },
+        ],
       },
     ],
   },

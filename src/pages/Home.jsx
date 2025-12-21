@@ -10,15 +10,12 @@ const Home = () => {
     fetch("http://localhost:5000/meals")
       .then((res) => res.json())
       .then((data) => setMeals(data.slice(0, 6)));
-  }, []);
-
-  // fetch reviews
-  useEffect(() => {
-    fetch("http://localhost:5000/reviews")
+       fetch("http://localhost:5000/reviews")
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, []);
 
+  
   return (
     <div className="space-y-20">
       {/*HERO SECTION*/}
@@ -81,7 +78,7 @@ const Home = () => {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reviews.map((review) => (
+            {reviews?.map((review) => (
               <motion.div
                 key={review._id}
                 initial={{ opacity: 0, y: 20 }}
