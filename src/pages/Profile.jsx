@@ -1,167 +1,156 @@
-import axios from "axios";
-import { useRef, useState } from "react";
+import React, { useState } from "react";
+import {
+  FaUser,
+  FaMapMarkerAlt,
+  FaEdit,
+  FaRegCalendarAlt,
+} from "react-icons/fa";
+//import Loading from "../../components/Shared/Loading";
+//import { toast } from "react-toastify";
+//import ProfilePopUp from "./ProfilePopUp";
+//import useUser from "../../hooks/useUser";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth";
-import { updateProfile } from "firebase/auth";
 
-export default function Profile() {
-  const { user, role } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef(null);
-
-  if (!user) return null;
-
-  // IMAGE CHANGE 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const res = await fetch(
-        `https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data = await res.json();
-      const imageUrl = data.data.display_url;
-
-      await updateProfile(user, {
-        photoURL: imageUrl,
-      });
-
-      toast.success("Profile picture updated!");
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update profile picture");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  // ROLE REQUEST
+const MyProfile = () => {
+  const axiosSecure = useAxiosSecure();
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedUpdate, setSelectedUpdate] = useState(null);
+  const { users: user, isLoading, refetch } = useUser();
   const handleRequest = async (type) => {
+    const request = {
+      userName: user?.displayName,
+      userEmail: user?.email,
+      requestType: type,
+      requestStatus: "pending",
+      requestTime: new Date(),
+    };
+
     try {
-      setLoading(true);
+      const res = await axiosSecure.post("/requests", request);
 
-      const requestData = {
-        userName: user.displayName || "Unknown",
-        userEmail: user.email,
-        requestType: type,
-        requestStatus: "pending",
-        requestTime: new Date().toISOString(),
-      };
-
-      await axios.post("http://localhost:5000/role-requests", requestData, {
-        withCredentials: true,
-      });
-
-      toast.success(`Request sent to admin for ${type}`);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to send request");
-    } finally {
-      setLoading(false);
+      if (res.status === 201) {
+        toast.success(`(${type}) Request has been sent!`);
+      }
+    } catch (err) {
+      if (err.response?.status === 409) {
+        toast.error("Already requested!");
+      } else {
+        toast.error("Something went wrong!");
+      }
     }
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
-    <div className="max-w-4xl mx-auto mt-12">
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-3">
+    <div>
+      <title>Rannafy | My Profile</title>
+      <div className="mb-6 mt-12 lg:mt-0">
+        <h1 className="text-3xl font-bold text-gray-800 ">My Profile</h1>
+      </div>
 
-        {/* LEFT SIDE */}
-        <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 flex flex-col items-center justify-center relative">
-
-          {/* Edit icon */}
-          <div
-            onClick={() => fileInputRef.current.click()}
-            className="absolute top-4 right-4 bg-white p-2 rounded-full shadow cursor-pointer hover:bg-gray-100"
-            title="Edit Profile Picture"
-          >
-            ✏️
+      <div className="flex justify-center items-center pt-0 lg:pt-[12%] px-4">
+        <div className="bg-white shadow-xl rounded-xl overflow-hidden w-full max-w-4xl flex flex-col lg:flex-row">
+          {/* Sidebar */}
+          <div className="bg-linear-to-b from-primary to-orange-600 text-white flex flex-col items-center p-6 lg:w-1/3 relative">
+            <img
+              src={user?.photoURL || "https://via.placeholder.com/150"}
+              alt="User"
+              className="w-28 h-28 rounded-full border-4 border-white object-cover mb-4"
+            />
+            <h2 className="text-xl font-bold">{user?.displayName}</h2>
+            <p className="text-sm opacity-80 wrap-break-word">{user?.email}</p>
+            <span className="mt-3 px-3 py-1 bg-white text-primary rounded-full text-xs font-semibold">
+              {user?.role?.toUpperCase()}
+            </span>
+            <button
+              onClick={() => {
+                setSelectedUpdate(user);
+                setShowUpdateModal(true);
+              }}
+              className="btn-primary hover:text-black cursor-pointer absolute right-3"
+            >
+              <FaEdit className="text-2xl" />
+            </button>
           </div>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageChange}
-          />
+          {/* Details Section */}
+          <div className="flex-1 p-6 space-y-2">
+            <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
+              Profile Information
+            </h3>
 
-          <img
-            src={user.photoURL || "https://i.ibb.co/2kR5zq0/avatar.png"}
-            alt="User"
-            className="w-28 h-28 rounded-full border-4 border-white object-cover mb-3"
-          />
+            <div className=" space-y-2">
+              <div className="flex items-center gap-2 text-gray-700">
+                <FaUser className="text-primary" /> Status:{" "}
+                <span
+                  className={`font-semibold ${
+                    user?.userStatus === "active"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {user?.userStatus}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <FaMapMarkerAlt className="text-primary" />{" "}
+                {user?.address || "No Address"}
+              </div>
+              {user?.role === "chef" && (
+                <div className="flex items-center gap-2 text-gray-700">
+                  <FaUser className="text-primary" /> Chef ID:{" "}
+                  <span className="font-semibold">{user?.chefId}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2 text-gray-700">
+                <FaRegCalendarAlt className="text-primary" /> Open:{" "}
+                <span>
+                  {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
 
-          {uploading && (
-            <p className="text-white text-sm animate-pulse">
-              Updating photo...
-            </p>
-          )}
+            {/* Action Buttons */}
+            <div className=" flex flex-wrap gap-3">
+              {user?.role !== "chef" && user?.role !== "admin" && (
+                <button
+                  onClick={() => handleRequest("chef")}
+                  className="rannafy-btn"
+                >
+                  Be an Chef
+                </button>
+              )}
 
-          <h2 className="text-xl font-bold text-white mt-2">
-            {user.displayName || "No Name"}
-          </h2>
-
-          <p className="text-sm text-orange-100">{user.email}</p>
-
-          <span className="mt-3 px-4 py-1 text-xs bg-white text-orange-600 rounded-full font-semibold">
-            {role?.toUpperCase()}
-          </span>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div className="md:col-span-2 p-6">
-          <h3 className="text-lg font-semibold mb-4 border-b pb-2">
-            Profile Information
-          </h3>
-
-          <div className="space-y-3 text-sm text-gray-700">
-            <p>👤 <strong>Status:</strong> <span className="text-green-600">Active</span></p>
-            <p>📍 <strong>Address:</strong> Not Added</p>
-
-            {role === "chef" && (
-              <p>🧑‍🍳 <strong>Chef ID:</strong> CHEF-{user.uid.slice(0, 6)}</p>
-            )}
-
-            <p>📅 <strong>Open:</strong> {new Date().toDateString()}</p>
-          </div>
-
-          {/* BUTTONS */}
-          <div className="flex gap-3 pt-6">
-            {role !== "chef" && role !== "admin" && (
-              <button
-                disabled={loading}
-                onClick={() => handleRequest("chef")}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
-              >
-                Be a Chef
-              </button>
-            )}
-
-            {role !== "admin" && (
-              <button
-                disabled={loading}
-                onClick={() => handleRequest("admin")}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition"
-              >
-                Be an Admin
-              </button>
-            )}
+              {user?.role !== "admin" && (
+                <button
+                  onClick={() => handleRequest("admin")}
+                  className="rannafy-btn bg-green-500!"
+                >
+                  Be an Admin
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {showUpdateModal && (
+        <ProfilePopUp
+          getUser={selectedUpdate}
+          setShowUpdateModal={setShowUpdateModal}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default MyProfile;
