@@ -15,13 +15,14 @@ import {
   House,
   UserRound,
 } from "lucide-react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../../hooks/useAuth";
+import useRole from "../../hooks/useRole";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import Swal from "sweetalert2";
-import useRole from "../hooks/useRole";
-import DashboardLogo from "../components/Shared/DashboardLogo";
-import useAuth from "../../hooks/useAuth";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+// import DashboardLogo from "../components/Shared/DashboardLogo";
+
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

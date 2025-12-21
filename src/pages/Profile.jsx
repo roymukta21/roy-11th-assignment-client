@@ -11,6 +11,7 @@ import {
 //import useUser from "../../hooks/useUser";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
+import useUser from "../hooks/useUser";
 
 const MyProfile = () => {
   const axiosSecure = useAxiosSecure();
