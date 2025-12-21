@@ -134,7 +134,7 @@ export default function Navbar() {
               {/* Avatar */}
               <div className="relative group">
                 <img
-                  src={user.photoURL || "https://i.ibb.co/2kR9ZQp/user.png"}
+                  src={user.photoURL}
                   alt="profile"
                   className="w-9 h-9 rounded-full border cursor-pointer"
                 />

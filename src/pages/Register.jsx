@@ -9,6 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { auth } from "../firebase/firebase.config";
+import axios from "axios";
 
 export default function Signup() {
   const [error, setError] = useState("");
@@ -55,6 +56,17 @@ export default function Signup() {
           displayName: name,
           photoURL,
         });
+
+        // 🔥 Save user to MongoDB
+        const userInfo = {
+          name,
+          email,
+          photoURL,
+          role: "user",
+          status: "active",
+        };
+
+        await axios.post("http://localhost:5000/api/users", userInfo);
       }
 
       toast.success("Signup successful! Welcome aboard 💫");
@@ -67,14 +79,27 @@ export default function Signup() {
   };
 
   const handleGoogleSignup = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      toast.success("Signed in with Google!");
-      navigate("/");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+
+    // 🔥 ADD THIS: Save Google user to MongoDB
+    const userInfo = {
+      name: result.user.displayName,
+      email: result.user.email,
+      photoURL: result.user.photoURL,
+      role: "user",
+      status: "active",
+    };
+
+    await axios.post("http://localhost:5000/api/users", userInfo);
+
+    toast.success("Signed in with Google!");
+    navigate("/");
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-blue-100">

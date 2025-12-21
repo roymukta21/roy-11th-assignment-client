@@ -1,49 +1,48 @@
 import { NavLink } from "react-router";
-import {
-  FaUserCircle,
-  FaUser,
-  FaTachometerAlt,
-  FaUsers,
-  FaPlus,
-  FaCogs,
-  FaClipboardList,
-  FaUserCheck,
-  FaMoneyBillWave,
-  FaChartBar,
-} from "react-icons/fa";
+import { FaUserCircle, FaUser, FaChartBar, FaHome } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
 
 export default function Sidebar() {
+  const { user } = useAuth();
   return (
     <div className="w-64 bg-white shadow-md min-h-screen">
-  
-      {/* Admin Info */}
       <div className="flex items-center gap-3 px-6 py-4 border-b">
-        <FaUserCircle className="text-4xl text-gray-400" />
+        <span className="text-2xl">👨‍🍳</span>
+
         <div>
-          <p className="font-semibold">Admin User</p>
-          <p className="text-sm text-gray-500">admin@example.com</p>
+          <p className="font-semibold capitalize">{user?.role || "user"}</p>
+
+          <p className="text-sm text-orange-700">{user?.email}</p>
         </div>
       </div>
 
       {/* Menu */}
       <nav className="px-4 py-4 space-y-1 text-gray-700">
-        <MenuItem to="/dashboard/profile" icon={<FaUser />} label="My Profile" />
-        <MenuItem to="/dashboard" icon={<FaTachometerAlt />} label="Dashboard" />
-        <MenuItem to="/dashboard/manage-decorators" icon={<FaUsers />} label="Manage Decorators" />
+        <MenuItem to="/" icon={<FaHome />} label="Home" />
+        <MenuItem
+          to="/dashboard/profile"
+          icon={<FaUser />}
+          label="My Profile"
+        />
+        {/* <MenuItem to="/dashboard/manage-decorators" icon={<FaUsers />} label="Manage Decorators" />
         <MenuItem to="/dashboard/add-services" icon={<FaPlus />} label="Add Services" />
         <MenuItem to="/dashboard/manage-services" icon={<FaCogs />} label="Manage Services" />
         <MenuItem to="/dashboard/manage-bookings" icon={<FaClipboardList />} label="Manage Bookings" />
-        <MenuItem to="/dashboard/assign-decorator" icon={<FaUserCheck />} label="Assign Decorator" />
+        <MenuItem to="/dashboard/assign-decorator" icon={<FaUserCheck />} label="Assign Decorator" /> */}
 
         {/* Highlighted Revenue */}
-        <MenuItem
+        {/* <MenuItem
           to="/dashboard/admin-revenue"
           icon={<FaMoneyBillWave />}
           label="Revenue Monitoring"
           highlight
-        />
+        /> */}
 
-        <MenuItem to="/dashboard/analytics" icon={<FaChartBar />} label="Analytics Charts" />
+        <MenuItem
+          to="/dashboard/analytics"
+          icon={<FaChartBar />}
+          label="Analytics Charts"
+        />
       </nav>
     </div>
   );
