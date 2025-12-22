@@ -5,15 +5,13 @@ import {
   FaEdit,
   FaRegCalendarAlt,
 } from "react-icons/fa";
-//import Loading from "../../components/Shared/Loading";
-//import { toast } from "react-toastify";
-//import ProfilePopUp from "./ProfilePopUp";
-//import useUser from "../../hooks/useUser";
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
 import useUser from "../hooks/useUser";
+import Loading from "../components/Loading";
+import ProfilePopUp from "./ProfilePopUp";
 
-const MyProfile = () => {
+const Profile = () => {
   const axiosSecure = useAxiosSecure();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedUpdate, setSelectedUpdate] = useState(null);
@@ -48,9 +46,9 @@ const MyProfile = () => {
 
   return (
     <div>
-      <title>Rannafy | My Profile</title>
+      <title>LocalChefBazzar::My Profile</title>
       <div className="mb-6 mt-12 lg:mt-0">
-        <h1 className="text-3xl font-bold text-gray-800 ">My Profile</h1>
+        <h1 className="text-3xl font-bold text-orange-400 text-center">My Profile</h1>
       </div>
 
       <div className="flex justify-center items-center pt-0 lg:pt-[12%] px-4">
@@ -58,7 +56,7 @@ const MyProfile = () => {
           {/* Sidebar */}
           <div className="bg-linear-to-b from-primary to-orange-600 text-white flex flex-col items-center p-6 lg:w-1/3 relative">
             <img
-              src={user?.photoURL || "https://via.placeholder.com/150"}
+             src={user.photoURL || "https://ui-avatars.com/api/?name=User&background=f97316&color=fff"}
               alt="User"
               className="w-28 h-28 rounded-full border-4 border-white object-cover mb-4"
             />
@@ -124,16 +122,16 @@ const MyProfile = () => {
               {user?.role !== "chef" && user?.role !== "admin" && (
                 <button
                   onClick={() => handleRequest("chef")}
-                  className="rannafy-btn"
+                  className="primary-btn"
                 >
-                  Be an Chef
+                  Be a Chef
                 </button>
               )}
 
               {user?.role !== "admin" && (
                 <button
                   onClick={() => handleRequest("admin")}
-                  className="rannafy-btn bg-green-500!"
+                  className="primary-btn"
                 >
                   Be an Admin
                 </button>
@@ -154,4 +152,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default Profile;

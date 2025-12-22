@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../contexts/useAuth";
 import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
 
 export default function OrderRequests() {
   const { user } = useAuth();
@@ -20,7 +20,6 @@ export default function OrderRequests() {
   useEffect(() => {
     if (chefId) fetchOrders();
   }, [chefId]);
-
   const updateStatus = async (id, status) => {
     await axios.patch(
       `http://localhost:5000/orders/${id}`,

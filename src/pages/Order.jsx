@@ -1,182 +1,178 @@
-import { useContext, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../../components/Loading";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import axios from "axios";
-import { AuthContext } from "../providers/AuthProvider";
+import useUser from "../../hooks/useUser";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
-export default function Order() {
-  const { user } = useContext(AuthContext);
-  const location = useLocation();
-  const navigate = useNavigate();
+const Order = () => {
+  const axiosSecure = useAxiosSecure();
+  const { id } = useParams();
+  const { users } = useUser();
+  const nevigate = useNavigate();
 
-  // Food data from previous page
-  const { food } = location.state || {};
+  const { register, handleSubmit, setValue, watch } = useForm();
+  const { data: order = {}, isLoading } = useQuery({
+    queryKey: ["order", id],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/meals/${id}`);
+      return res.data;
+    },
+  });
 
-  const [quantity, setQuantity] = useState(1);
-  const [userAddress, setUserAddress] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  if (!food) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center bg-white shadow-xl rounded-2xl p-8">
-          <h3 className="text-xl font-semibold text-red-500 mb-2">No meal selected</h3>
-          <p className="text-gray-500 mb-4">Please go back and choose a meal to place an order.</p>
-          <button
-            onClick={() => navigate(-1)}
-            className="px-6 py-2 rounded-xl bg-gray-800 text-white hover:bg-gray-900"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const { _id, mealName, price, chefId } = food;
-
-  const totalPrice = useMemo(() => price * quantity, [price, quantity]);
-
-  const handleConfirmOrder = async (e) => {
-    e.preventDefault();
-
-    if (!userAddress.trim()) {
-      Swal.fire("Error", "Please enter your delivery address", "error");
-      return;
+  useEffect(() => {
+    if (users) {
+      setValue("userEmail", users.email);
     }
+  }, [users]);
 
-    const result = await Swal.fire({
-      title: "Confirm Order",
-      text: `Your total price is ৳${totalPrice}. Do you want to confirm the order?`,
-      icon: "question",
+  const [totalPrice, setTotalPrice] = useState(0);
+  const quantity = watch("quantity");
+
+  // set default price when order loads
+  useEffect(() => {
+    if (order?.price) {
+      setTotalPrice(order.price);
+      setValue("price", order.price);
+    }
+  }, [order]);
+
+  // update price when quantity changes
+  useEffect(() => {
+    if (order?.price && quantity) {
+      const updated = quantity * order.price;
+      setTotalPrice(updated);
+      setValue("price", updated);
+    }
+  }, [quantity, order]);
+
+  const handlePlaceOrder = (data) => {
+    const finalPrice = data.quantity * order.price;
+    setTotalPrice(finalPrice);
+    Swal.fire({
+      title: "Agree with the Cost?",
+      text: `You will be charged ${finalPrice}$ only`,
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, Confirm",
-      cancelButtonText: "Cancel",
-      confirmButtonColor: "#16a34a",
+      confirmButtonColor: "#CAEB66",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Confirm",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure
+          .post("/orders", {
+            mealId: order._id,
+            userName: users?.displayName,
+            email: users?.email,
+            ...data,
+            price: finalPrice,
+          })
+          .then((res) => {
+            if (res.data.insertedId) {
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Your order has been placed",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              nevigate("/dashboard/orders");
+            }
+          })
+          .catch((err) => {
+            Swal.fire({
+              icon: "error",
+              title: "Order Failed",
+              text:
+                err.response?.data?.message ||
+                "You are a fraud user. You cannot place orders.",
+            });
+          });
+      }
     });
-
-    if (!result.isConfirmed) return;
-
-    const orderData = {
-      foodId: _id,
-      mealName,
-      price,
-      quantity,
-      chefId,
-      paymentStatus: "Pending",
-      userEmail: user?.email,
-      userAddress,
-      orderStatus: "pending",
-      orderTime: new Date().toISOString(),
-    };
-
-    try {
-      setLoading(true);
-      await axios.post("http://localhost:5000/order_collection", orderData, {
-        withCredentials: true,
-      });
-
-      await Swal.fire({
-        icon: "success",
-        title: "Order placed successfully!",
-        text: "Your homemade meal is on the way 🍽️",
-        confirmButtonColor: "#16a34a",
-      });
-
-      navigate("/dashboard/my-orders");
-    } catch (error) {
-      console.error(error);
-      Swal.fire("Error", "Failed to place order. Please try again.", "error");
-    } finally {
-      setLoading(false);
-    }
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-10 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-2xl rounded-3xl overflow-hidden">
-          <div className="p-6 border-b">
-            <h2 className="text-3xl font-bold text-gray-800">Confirm Your Order</h2>
-            <p className="text-gray-500 mt-1">Review details before placing your order</p>
-          </div>
-
-          <form onSubmit={handleConfirmOrder} className="p-6 space-y-5">
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="text-sm font-medium text-gray-600">Meal Name</label>
-                <input
-                  value={mealName}
-                  disabled
-                  className="mt-1 w-full rounded-xl border bg-gray-100 px-4 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">Price (per item)</label>
-                <input
-                  value={`৳${price}`}
-                  disabled
-                  className="mt-1 w-full rounded-xl border bg-gray-100 px-4 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">Quantity</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value) || 1)}
-                  className="mt-1 w-full rounded-xl border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">Chef ID</label>
-                <input
-                  value={chefId}
-                  disabled
-                  className="mt-1 w-full rounded-xl border bg-gray-100 px-4 py-2"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-600">User Email</label>
-                <input
-                  value={user?.email || ""}
-                  disabled
-                  className="mt-1 w-full rounded-xl border bg-gray-100 px-4 py-2"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-600">Delivery Address</label>
-                <textarea
-                  value={userAddress}
-                  onChange={(e) => setUserAddress(e.target.value)}
-                  placeholder="House, Road, Area, City"
-                  className="mt-1 w-full rounded-xl border px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-green-400"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between bg-gray-50 rounded-2xl p-4">
-              <p className="text-lg font-semibold text-gray-700">Total Price</p>
-              <p className="text-2xl font-bold text-green-600">৳{totalPrice}</p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-2xl text-white font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90 disabled:opacity-60"
-            >
-              {loading ? "Placing Order..." : "Confirm Order"}
-            </button>
-          </form>
-        </div>
+    <div className="w-11/12 md:w-8/12 mx-auto py-10 px-4">
+      <title>LocalChefBazaar::Place Your Order</title>
+      <div className="my-5">
+        <Link
+          to="/meals"
+          className="flex items-center gap-2 text-primary hover:text-black text-xl font-semibold"
+        >
+          <FaArrowLeftLong /> Back to meals
+        </Link>
       </div>
+      <form onSubmit={handleSubmit(handlePlaceOrder)}>
+        <fieldset className="fieldset">
+          {/* user Email */}
+          <label className="label"> Email</label>
+          <input
+            type="email"
+            {...register("userEmail")}
+            defaultValue={users?.email}
+            readOnly
+            className="input w-full"
+          />
+          {/* Meals name */}
+          <label className="label">Meals Name</label>
+          <input
+            type="text"
+            {...register("mealName")}
+            defaultValue={order.foodName}
+            readOnly
+            className="input w-full"
+          />
+          {/* chefId */}
+          <label className="label">chefId</label>
+          <input
+            type="text"
+            {...register("chefId")}
+            defaultValue={order.chefId}
+            readOnly
+            className="input w-full"
+          />
+
+          {/* Meals price */}
+          <label className="label">Price</label>
+          <input
+            type="number"
+            {...register("price")}
+            value={totalPrice}
+            readOnly
+            className="input w-full"
+          />
+
+          {/* quantity */}
+          <label className="label">quantity</label>
+          <input
+            type="number"
+            {...register("quantity")}
+            className="input w-full"
+            placeholder="Enter quantity "
+          />
+
+          {/*  Delivery Address */}
+          <label className="label"> Delivery Address</label>
+          <input
+            type="text"
+            {...register("deliveryAddress")}
+            className="input w-full"
+          />
+        </fieldset>
+
+        <button type="submit" className="primary-btn">
+          Submit
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default Order;

@@ -17,6 +17,44 @@
 
 @custom-variant dark (&:where([data-theme=dark], .[data-theme=dark ]*));
 
-.btn {
-  @apply bg-white text-primary border border-primary rounded-md px-4 py-2 hover:bg-secondary hover:text-white transition;
+
+
+/* Button */
+
+.primary-btn {
+  @apply bg-[#ff6900] hover:bg-orange-700 mt-3 text-white py-2.5 px-3.5 rounded-sm transition-colors duration-200 cursor-pointer}
+
+
+.delete-btn {
+  @apply bg-red-500 hover:bg-red-600 mt-3 text-white py-2.5 px-3.5 rounded-sm transition-colors duration-200 cursor-pointer;
+}
+
+.success-btn {
+  @apply flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition duration-200 cursor-pointer;
+}
+
+.danger-btn {
+  @apply flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition duration-200 cursor-pointer;
+}
+
+.tab-select {
+  @apply bg-[#ff6900] mt-3 text-white py-2.5 px-3.5 hover:bg-orange-600 transition-colors cursor-pointer outline-0;
+}
+
+
+/* Status Tags */
+.status-success {
+  @apply px-2 py-1 bg-green-100 text-green-700 rounded text-xs;
+}
+
+.status-error {
+  @apply px-2 py-1 bg-red-100 text-red-700 rounded text-xs;
+}
+
+.status-pending {
+  @apply px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs;
+}
+
+.user-tag {
+  @apply px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs;
 }

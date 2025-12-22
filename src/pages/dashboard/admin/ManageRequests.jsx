@@ -1,148 +1,157 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Loading from "../../../components/Loading";
 
-export default function ManageRequests() {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
+const ManageRequests = () => {
+  const axiosSecure = useAxiosSecure();
 
-  // Fetch all requests
-  useEffect(() => {
-    axios.get("/requests") // 🔁 backend endpoint
-      .then(res => {
-        setRequests(res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+  const {
+    data: requests = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["requests"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/requests");
+      return res.data;
+    },
+  });
 
-  // Generate chefId
-  const generateChefId = () => {
-    return `chef-${Math.floor(1000 + Math.random() * 9000)}`;
-  };
-
-  // Accept request
-  const handleAccept = async (req) => {
-    try {
-      let roleUpdate = {};
-
-      if (req.requestType === "chef") {
-        roleUpdate = {
-          role: "chef",
-          chefId: generateChefId(),
-        };
+  const handleAccept = (id) => {
+    Swal.fire({
+      title: "Accept Request?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#10b981",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, Accept",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.patch(`/requests/${id}`, { action: "accept" }).then(() => {
+          refetch();
+          Swal.fire("Approved!", "Request approved successfully.", "success");
+        });
       }
+    });
+  };
 
-      if (req.requestType === "admin") {
-        roleUpdate = {
-          role: "admin",
-        };
+  const handleReject = (id) => {
+    Swal.fire({
+      title: "Reject Request?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Reject",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.patch(`/requests/${id}`, { action: "reject" }).then(() => {
+          refetch();
+          Swal.fire("Rejected!", "Request rejected.", "success");
+        });
       }
-
-      // 1️⃣ Update user role
-      await axios.patch(`/users/${req.userEmail}`, roleUpdate);
-
-      // 2️⃣ Update request status
-      await axios.patch(`/requests/${req._id}`, {
-        requestStatus: "approved",
-      });
-
-      // UI update
-      setRequests(prev =>
-        prev.map(r =>
-          r._id === req._id
-            ? { ...r, requestStatus: "approved" }
-            : r
-        )
-      );
-
-      Swal.fire("Approved!", "Request has been approved", "success");
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Something went wrong", "error");
-    }
+    });
   };
 
-  // Reject request
-  const handleReject = async (req) => {
-    try {
-      await axios.patch(`/requests/${req._id}`, {
-        requestStatus: "rejected",
-      });
-
-      setRequests(prev =>
-        prev.map(r =>
-          r._id === req._id
-            ? { ...r, requestStatus: "rejected" }
-            : r
-        )
-      );
-
-      Swal.fire("Rejected", "Request has been rejected", "info");
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Something went wrong", "error");
-    }
-  };
-
-  if (loading) return <p className="text-center">Loading...</p>;
+  if (isLoading) {
+    return <Loading/>;
+  }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Manage Requests</h2>
-
-      <div className="overflow-x-auto">
-        <table className="table w-full">
-          <thead className="bg-gray-200">
-            <tr>
-              <th>User Name</th>
-              <th>User Email</th>
-              <th>Request Type</th>
-              <th>Status</th>
-              <th>Request Time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.map(req => (
-              <tr key={req._id}>
-                <td>{req.userName}</td>
-                <td>{req.userEmail}</td>
-                <td className="capitalize">{req.requestType}</td>
-                <td className={`font-semibold ${
-                  req.requestStatus === "approved"
-                    ? "text-green-600"
-                    : req.requestStatus === "rejected"
-                    ? "text-red-600"
-                    : "text-yellow-600"
-                }`}>
-                  {req.requestStatus}
-                </td>
-                <td>{new Date(req.requestTime).toLocaleString()}</td>
-                <td className="space-x-2">
-                  <button
-                    disabled={req.requestStatus !== "pending"}
-                    onClick={() => handleAccept(req)}
-                    className="btn btn-success btn-sm disabled:opacity-50"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    disabled={req.requestStatus !== "pending"}
-                    onClick={() => handleReject(req)}
-                    className="btn btn-error btn-sm disabled:opacity-50"
-                  >
-                    Reject
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div>
+      <title>Manage Requests</title>
+      <div className="mb-6 mt-12 lg:mt-0">
+        <h1 className="text-3xl font-bold text-gray-800 ">Manage Requests</h1>
       </div>
+
+      {requests.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <p className="text-gray-500 text-lg">No requests found</p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="my-th">User Name</th>
+                  <th className="my-th">Email</th>
+                  <th className="my-th">Request Type</th>
+                  <th className="my-th">Status</th>
+                  <th className="my-th">Request Time</th>
+                  <th className="my-th">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {requests.map((request) => (
+                  <tr key={request._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {request.userName}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {request.userEmail}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="user-tag">
+                        {request.requestType}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="status-pending">
+                        {request.requestStatus}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {format(
+                        new Date(request.requestTime),
+                        "MMM dd, yyyy HH:mm"
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      {request.requestStatus === "pending" ? (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleAccept(request._id)}
+                            className="success-btn"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => handleReject(request._id)}
+                            className="delete-btn"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex space-x-2">
+                          {request.requestStatus === "approved" ? (
+                            <span className="status-success">
+                              This request has been accepted
+                            </span>
+                          ) : (
+                            <span className="status-error">
+                              This request has been rejected
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default ManageRequests;

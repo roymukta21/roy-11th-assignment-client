@@ -21,7 +21,7 @@ import { NavLink, Outlet, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import DashboardLogo from "../components/Shared/DashboardLogo";
+import DashboardLogo from "../../components/DashboardLogo";
 
 
 const DashboardLayout = () => {
@@ -91,7 +91,7 @@ const DashboardLayout = () => {
           .catch((error) => console.log(error));
         Swal.fire({
           title: "Logout successful",
-          text: "Thanks for staying with RannaFy!",
+          text: "Thanks for staying with us!",
           icon: "success",
         });
       }
@@ -125,7 +125,7 @@ const DashboardLayout = () => {
               {role === "chef"
                 ? "👨‍🍳 Chef"
                 : role === "admin"
-                ? "⚙️ Admin"
+                ? "🛡️ Admin"
                 : "🍽️ Food"}
             </h2>
             <p className="text-sm text-primary font-semibold mt-1">

@@ -8,6 +8,18 @@ import Meals from "../pages/Meals.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import DashboardLayout from "../pages/dashboard/DashboardLayout.jsx";
 import Profile from "../pages/Profile.jsx";
+import MyOrders from "../pages/dashboard/user/MyOrders.jsx";
+import MyReviews from "../pages/dashboard/user/MyReviews.jsx";
+import FavoriteMeals from "../pages/dashboard/user/FavoriteMeals.jsx";
+import ChefRoutes from "./ChefRoutes.jsx";
+import MyMeals from "../pages/dashboard/chef/MyMeals.jsx";
+import OrderRequests from "../pages/OrderRequests.jsx";
+import CreateMeal from "../pages/dashboard/chef/CreateMeal.jsx";
+import PlatformStatistics from "../pages/dashboard/admin/PlatformStatistics.jsx";
+import AdminRoutes from "./AdminRoutes.jsx";
+import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
+import ManageRequests from "../pages/dashboard/admin/ManageRequests.jsx";
+
 
 const router = createBrowserRouter([
   {
@@ -30,6 +42,7 @@ const router = createBrowserRouter([
         path: "/Meals",
         Component: Meals,
       },
+      // Dashboard layout
       {
         path: "/dashboard",
         element: (
@@ -38,34 +51,58 @@ const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
-          // {
-          //   index: true,
-          //   element: <Dash
-          // },
+          { path: "/dashboard", element: <Profile /> },
+          { path: "/dashboard/orders", element: <MyOrders/> },
+          { path: "", element: <MyReviews/> },
+          { path: "/dashboard/favorites", element: <FavoriteMeals/> },
           {
-            path: "Profile",
-            element: <Profile></Profile>
+            path: "/dashboard/my-meals",
+            element: (
+              <ChefRoutes>
+                <MyMeals />{" "}
+              </ChefRoutes>
+            ),
           },
-          // {
-          //   path: "manage-decorators",
-          //   element: <>,
-          // },
-          // {
-          //   path: "add-services",
-          //   element: <h3 className="text-center mt-6">Add Services</h3>,
-          // },
-          // {
-          //   path: "manage-services",
-          //   element: <h3 className="text-center mt-6">Manage Services</h3>,
-          // },
-          // {
-          //   path: "manage-bookings",
-          //   element: <h3 className="text-center mt-6">Manage Bookings</h3>,
-          // },
-          // {
-          //   path: "assign-decorator",
-          //   element: <h3 className="text-center mt-6">Assign Decorator</h3>,
-          // },
+          {
+            path: "/dashboard/order-requests",
+            element: (
+              <ChefRoutes>
+                <OrderRequests />{" "}
+              </ChefRoutes>
+            ),
+          },
+          {
+            path: "/dashboard/create-meal",
+            element: (
+              <ChefRoutes>
+                <CreateMeal />
+              </ChefRoutes>
+            ),
+          },
+          {
+            path: "/dashboard/statistics",
+            element: (
+              <AdminRoutes>
+                <PlatformStatistics />
+              </AdminRoutes>
+            ),
+          },
+          {
+            path: "/dashboard/manage-users",
+            element: (
+              <AdminRoutes>
+                <ManageUsers/>
+              </AdminRoutes>
+            ),
+          },
+          {
+            path: "/dashboard/manage-requests",
+            element: (
+              <AdminRoutes>
+                <ManageRequests />
+              </AdminRoutes>
+            ),
+          },
         ],
       },
     ],
