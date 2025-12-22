@@ -7,10 +7,10 @@ const Home = () => {
 
   // fetch meals
   useEffect(() => {
-    fetch("local-chef-bazaar-server-wine.vercel.app/meals")
+    fetch("https://local-chef-bazaar-server-wine.vercel.app/meals")
       .then((res) => res.json())
       .then((data) => setMeals(data.slice(0, 6)));
-       fetch("local-chef-bazaar-server-wine.vercel.app/reviews")
+       fetch("https://local-chef-bazaar-server-wine.vercel.app/reviews")
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, []);

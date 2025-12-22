@@ -18,7 +18,7 @@ const Profile = () => {
   const { users: user, isLoading, refetch } = useUser();
   const handleRequest = async (type) => {
     const request = {
-      userName: user?.displayName,
+      userName: user?.name,
       userEmail: user?.email,
       requestType: type,
       requestStatus: "pending",
