@@ -67,15 +67,7 @@ const NotFound = () => {
         transition={{ delay: 0.6, duration: 0.8 }}
         className="absolute bottom-6 sm:bottom-10 text-gray-400 text-xs sm:text-sm tracking-wider px-2 text-center"
       >
-        Developed by{" "}
-        <a
-          href="https://www.linkedin.com/in/mohyminulislam/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-orange-600 font-bold hover:text-red-500 transition-colors"
-        >
-          Mohyminul Islam
-        </a>
+      
       </motion.p>
     </div>
   );

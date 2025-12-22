@@ -13,12 +13,12 @@ import MyReviews from "../pages/dashboard/user/MyReviews.jsx";
 import FavoriteMeals from "../pages/dashboard/user/FavoriteMeals.jsx";
 import ChefRoutes from "./ChefRoutes.jsx";
 import MyMeals from "../pages/dashboard/chef/MyMeals.jsx";
-import OrderRequests from "../pages/OrderRequests.jsx";
 import CreateMeal from "../pages/dashboard/chef/CreateMeal.jsx";
 import PlatformStatistics from "../pages/dashboard/admin/PlatformStatistics.jsx";
 import AdminRoutes from "./AdminRoutes.jsx";
 import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
 import ManageRequests from "../pages/dashboard/admin/ManageRequests.jsx";
+import OrderRequests from "../pages/dashboard/chef/OrderRequests.jsx";
 
 
 const router = createBrowserRouter([

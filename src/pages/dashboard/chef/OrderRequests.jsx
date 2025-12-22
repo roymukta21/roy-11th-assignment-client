@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 export default function OrderRequests() {
   const { user } = useAuth();
@@ -11,7 +11,7 @@ export default function OrderRequests() {
 
   const fetchOrders = async () => {
     const res = await axios.get(
-      `http://localhost:5000/chef/orders?chefId=${chefId}`,
+      `local-chef-bazaar-server-wine.vercel.app/chef/orders?chefId=${chefId}`,
       { withCredentials: true }
     );
     setOrders(res.data);
@@ -22,7 +22,7 @@ export default function OrderRequests() {
   }, [chefId]);
   const updateStatus = async (id, status) => {
     await axios.patch(
-      `http://localhost:5000/orders/${id}`,
+      `local-chef-bazaar-server-wine.vercel.app/orders/${id}`,
       { status },
       { withCredentials: true }
     );

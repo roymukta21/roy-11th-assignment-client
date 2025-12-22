@@ -22,7 +22,7 @@
 
 //     const fetchUser = async () => {
 //       try {
-//         const response = await axios.get(`http://localhost:5000/users/:email`);
+//         const response = await axios.get(`local-chef-bazaar-server-wine.vercel.app/users/:email`);
 //         setUser(response.data); 
 //       } catch (error) {
 //         console.error("Error fetching user from MongoDB:", error);

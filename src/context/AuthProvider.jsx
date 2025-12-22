@@ -33,31 +33,13 @@ const AuthProvider = ({ children }) => {
 
   // Observer
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unSubscibe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-
-      try {
-        if (currentUser) {
-          await axios.post(
-            "http://localhost:5000/jwt",
-            { email: currentUser.email },
-            { withCredentials: true }
-          );
-        } else {
-          await axios.post(
-            "http://localhost:5000/logout",
-            {},
-            { withCredentials: true }
-          );
-        }
-      } catch (error) {
-        console.error("Auth observer error:", error.message);
-      }
-
       setLoading(false);
+      return () => {
+        unSubscibe();
+      };
     });
-
-    return () => unsubscribe();
   }, []);
 
   const authInfo = {

@@ -66,7 +66,7 @@ export default function Signup() {
           status: "active",
         };
 
-        await axios.post("http://localhost:5000/api/users", userInfo);
+        await axios.post("local-chef-bazaar-server-wine.vercel.app/api/users", userInfo);
       }
 
       toast.success("Signup successful! Welcome aboard 💫");
@@ -91,7 +91,7 @@ export default function Signup() {
       status: "active",
     };
 
-    await axios.post("http://localhost:5000/api/users", userInfo);
+    await axios.post("local-chef-bazaar-server-wine.vercel.app/api/users", userInfo);
 
     toast.success("Signed in with Google!");
     navigate("/");
