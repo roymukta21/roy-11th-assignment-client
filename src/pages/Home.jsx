@@ -27,7 +27,7 @@ const Home = () => {
       >
         <img
           className="h-[420px] md:h-[540px] w-full object-cover"
-          src="/src/assets/banner.jpg"
+          src="/localChefBazaar.png"
           alt="Banner"
         />
 
