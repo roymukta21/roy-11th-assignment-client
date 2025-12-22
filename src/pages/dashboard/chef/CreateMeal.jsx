@@ -68,7 +68,7 @@ const CreateMeal = () => {
           "You are a fraud user. You cannot add meals.",
         type: "error",
         isLoading: false,
-        autoClose: 3000,
+        autoClose: 5000,
       });
     } finally {
       setLoading(false);

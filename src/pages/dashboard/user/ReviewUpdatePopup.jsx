@@ -89,7 +89,7 @@ const ReviewUpdatePopup = ({ review, setShowUpdateModal, refetch }) => {
           />
           {errors.text && (
             <p className="text-red-500 text-sm">{errors.text.message}</p>
-          )}
+          )}z
 
           <button type="submit" className="primary-btn">
             Update Review
