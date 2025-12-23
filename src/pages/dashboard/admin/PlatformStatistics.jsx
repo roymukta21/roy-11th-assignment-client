@@ -25,9 +25,9 @@ const PlatformStatistics = () => {
   const axiosSecure = useAxiosSecure();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-stats"],
+    queryKey: ["Admin-stats"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/admin-stats");
+      const res = await axiosSecure.get("/Admin-stats");
       return res.data;
     },
   });

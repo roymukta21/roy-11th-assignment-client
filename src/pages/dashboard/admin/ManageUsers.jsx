@@ -30,7 +30,7 @@ const ManageUsers = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure
-          .patch(`/users/${id}`, updateStatus)
+          .patch(`/api/users/${id}`, updateStatus)
           .then((res) => {
             if (res.data.modifiedCount > 0) {
               refetch();
@@ -115,7 +115,7 @@ const ManageUsers = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {user.role === "admin" ? (
+                      {user.role === "Admin" ? (
                         <span className="status-success">Admin</span>
                       ) : user.userStatus === "fraud" ? (
                         <span className="status-error">fraud user</span>

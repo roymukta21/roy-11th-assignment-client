@@ -35,7 +35,7 @@ const DashboardLayout = () => {
     { path: "/", icon: House, label: "Home" },
     { path: "/dashboard", icon: UserRound, label: "My Profile" },
     { path: "/dashboard/orders", icon: ShoppingBag, label: "My Orders" },
-    { path: "/dashboard/reviews", icon: Star, label: "My Reviews" },
+    { path: "/dashboard/user/my-reviews", icon: Star, label: "My Reviews" },
     { path: "/dashboard/favorites", icon: Heart, label: "Favorite Meals" },
   ];
 
@@ -69,7 +69,7 @@ const DashboardLayout = () => {
 
   const getMenuItems = () => {
     if (role === "chef") return chefMenuItems;
-    if (role === "admin") return adminMenuItems;
+    if (role === "Admin") return adminMenuItems;
     return userMenuItems;
   };
   const menuItems = getMenuItems();
@@ -124,7 +124,7 @@ const DashboardLayout = () => {
             <h2 className="text-2xl font-bold text-gray-800">
               {role === "chef"
                 ? "👨‍🍳 Chef"
-                : role === "admin"
+                : role === "Admin"
                 ? "🛡️ Admin"
                 : "🍽️ Food"}
             </h2>

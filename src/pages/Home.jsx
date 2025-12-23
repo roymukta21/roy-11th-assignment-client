@@ -7,7 +7,7 @@ import useAxiosSecure from "../hooks/useAxiosSecure";
 import MealCard from "../components/MealCard";
 import Reveal from "../components/Reveal";
 import Loading from "../components/Loading";
-import { ChefHat, Clock10, HeartIcon, ShareIcon, Sparkles, UsersIcon } from "lucide-react";
+import { ChefHat, Clock10, HeartIcon, Quote, ShareIcon, Sparkles, Star, UsersIcon } from "lucide-react";
 import { Link } from "react-router";
 
 /* ---------------- animations ---------------- */
@@ -55,32 +55,32 @@ const Home = () => {
   const features = [
     {
       icon: <Clock10 className="w-10 h-10 text-orange-600" />,
-      title: "Save Time in the Kitchen",
+      title: <span className="text-black dark:text-white">Save Time in the Kitchen</span>,
       desc: "Quick & easy recipes — ready in 30 minutes or less.",
     },
     {
       icon: <HeartIcon className="w-10 h-10 text-orange-600" />,
-      title: "Save Your Favorites",
+      title: <span className="text-black dark:text-white">Save Your Favorites</span>,
       desc: "Build your personal cookbook with one click.",
     },
     {
       icon: <ChefHat className="w-10 h-10 text-orange-600" />,
-      title: "Add Your Own Recipes",
+      title: <span className="text-black dark:text-white">Add Your Own Recipes</span>,
       desc: "Share your signature dishes with the community.",
     },
     {
       icon: <ShareIcon className="w-10 h-10 text-orange-600" />,
-      title: "Share with Friends",
+      title: <span className="text-black dark:text-white">Share with Friends</span>,
       desc: "Send recipes instantly to friends & family.",
     },
     {
       icon: <UsersIcon className="w-10 h-10 text-orange-600" />,
-      title: "Foodie Community",
+      title: <span className="text-black dark:text-white">Foodie Community</span>,
       desc: "Discover meals from real home cooks.",
     },
     {
       icon: <Sparkles className="w-10 h-10 text-orange-600" />,
-      title: "Always Fresh",
+      title: <span className="text-black dark:text-white">Always Fresh</span>,
       desc: "New recipes added daily.",
     },
   ];
@@ -165,7 +165,7 @@ const Home = () => {
       <section className="py-20">
         <Reveal>
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold">
+            <h2 className="text-4xl md:text-5xl font-extrabold dark:text-gray-100">
               Why You'll Love
               <span className="text-orange-600"> Cooking With Us</span>
             </h2>
@@ -190,9 +190,9 @@ const Home = () => {
       <section className="py-20 bg-gray-50 rounded-3xl">
         <Reveal>
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-extrabold">
-              Loved by Home Cooks
-              <span className="text-orange-600"> Everywhere</span>
+            <h2 className="text-4xl md:text-5xl font-extrabold ">
+              
+              <span className="text-orange-600"> Loved by Everywhere</span>
             </h2>
           </div>
 
@@ -216,7 +216,7 @@ const Home = () => {
 
                   <p className="italic mb-6">"{review.text}"</p>
 
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-4 dark:text-orange-600">
                     <img
                       src={review.UserPhoto}
                       alt={review.userName}

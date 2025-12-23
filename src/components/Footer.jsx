@@ -1,29 +1,38 @@
-
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 mt-20">
       <div className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-
           {/* Brand */}
           <div>
             <h2 className="text-2xl font-bold text-white">LocalChefBazaar</h2>
             <p className="mt-4 text-sm leading-relaxed">
-              A trusted marketplace connecting local home chefs with food lovers.
-              Fresh, homemade meals — delivered with care.
+              A trusted marketplace connecting local home chefs with food
+              lovers. Fresh, homemade meals — delivered with care.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Quick Links
+            </h3>
             <ul className="space-y-2 text-sm">
               <li className="hover:text-white cursor-pointer">Home</li>
               <li className="hover:text-white cursor-pointer">Meals</li>
               <li className="hover:text-white cursor-pointer">Dashboard</li>
-              <li className="hover:text-white cursor-pointer">Login / Register</li>
+              <li className="hover:text-white cursor-pointer">
+                Login / Register
+              </li>
             </ul>
           </div>
 
@@ -47,13 +56,30 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Follow Us</h3>
             <div className="flex gap-4">
-              <a className="p-2 rounded-full bg-gray-800 hover:bg-indigo-600 transition">
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-gray-800 hover:bg-indigo-600 transition"
+              >
                 <Facebook size={18} />
               </a>
-              <a className="p-2 rounded-full bg-gray-800 hover:bg-pink-600 transition">
+
+              <a
+                href="https://www.instagram.com/"
+                className="p-2 rounded-full bg-gray-800 hover:bg-pink-600 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Instagram size={18} />
               </a>
-              <a className="p-2 rounded-full bg-gray-800 hover:bg-sky-500 transition">
+
+              <a
+                href="https://twitter.com/"
+                className="p-2 rounded-full bg-gray-800 hover:bg-sky-500 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Twitter size={18} />
               </a>
             </div>
@@ -68,4 +94,3 @@ export default function Footer() {
     </footer>
   );
 }
-

@@ -43,12 +43,14 @@ const Profile = () => {
   if (isLoading) {
     return <Loading />;
   }
-
+  //console.log(user)
   return (
     <div>
       <title>LocalChefBazzar::My Profile</title>
       <div className="mb-6 mt-12 lg:mt-0">
-        <h1 className="text-3xl font-bold text-orange-400 text-center">My Profile</h1>
+        <h1 className="text-3xl font-bold text-orange-400 text-center">
+          My Profile
+        </h1>
       </div>
 
       <div className="flex justify-center items-center pt-0 lg:pt-[12%] px-4">
@@ -56,7 +58,7 @@ const Profile = () => {
           {/* Sidebar */}
           <div className="bg-linear-to-b from-primary to-orange-600 text-white flex flex-col items-center p-6 lg:w-1/3 relative">
             <img
-             src={user.photoURL || "https://ui-avatars.com/api/?name=User&background=f97316&color=fff"}
+              src={user?.photoURL}
               alt="User"
               className="w-28 h-28 rounded-full border-4 border-white object-cover mb-4"
             />
@@ -128,9 +130,9 @@ const Profile = () => {
                 </button>
               )}
 
-              {user?.role !== "admin" && (
+              {user?.role !== "Admin" && (
                 <button
-                  onClick={() => handleRequest("admin")}
+                  onClick={() => handleRequest("Admin")}
                   className="primary-btn"
                 >
                   Be an Admin

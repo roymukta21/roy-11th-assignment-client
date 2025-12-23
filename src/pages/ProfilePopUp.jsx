@@ -28,7 +28,7 @@ const ProfilePopUp = ({ setShowUpdateModal, getUser, refetch }) => {
   const onSubmit = async (data) => {
     const updatedData = { ...data };
     try {
-      await axiosSecure.patch(`/users/${getUser._id}`, updatedData);
+      await axiosSecure.patch(`/api/users/${getUser._id}`, updatedData);
       refetch();
       setShowUpdateModal(false);
       toast.success("Profile updated successfully!");
