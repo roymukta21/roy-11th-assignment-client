@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import Loading from "../../../components//Loading";
+import Loading from "../../../components/Loading";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();

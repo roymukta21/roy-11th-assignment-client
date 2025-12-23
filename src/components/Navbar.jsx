@@ -108,6 +108,17 @@ export default function Navbar() {
               defaultChecked={theme === "dark"}
             />
 
+            {/* LOGOUT BUTTON (desktop) */}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="hidden sm:flex items-center gap-1 px-4 py-2 text-red-500 border border-red-500 rounded hover:bg-red-50 transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+                Logout
+              </button>
+            )}
+
             {/* USER */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -186,6 +197,20 @@ export default function Navbar() {
                   {item.name}
                 </Link>
               ))}
+
+              {/* LOGOUT BUTTON (mobile) */}
+              {user && (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 text-red-500 border border-red-500 rounded hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Logout
+                </button>
+              )}
             </div>
           </div>
         )}

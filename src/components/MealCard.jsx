@@ -57,7 +57,7 @@ const MealCard = ({ meal }) => {
 
         {/* See Details Button */}
         <div className="pb-4 mt-5">
-          <Link to={`/meals/${meal._id}`} className="primary-btn w-full">
+          <Link to={`/meals-details/${meal._id}`} className="primary-btn w-full">
             See Details
           </Link>
         </div>

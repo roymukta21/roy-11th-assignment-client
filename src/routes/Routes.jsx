@@ -19,6 +19,7 @@ import AdminRoutes from "./AdminRoutes.jsx";
 import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
 import ManageRequests from "../pages/dashboard/admin/ManageRequests.jsx";
 import OrderRequests from "../pages/dashboard/chef/OrderRequests.jsx";
+import MealDetails from "../pages/MealDetails.jsx";
 
 
 const router = createBrowserRouter([
@@ -39,8 +40,12 @@ const router = createBrowserRouter([
         Component: Register,
       },
       {
-        path: "/Meals",
+        path: "/meals",
         Component: Meals,
+      },
+      {
+        path: "/meals-details/:id",
+        Component: MealDetails
       },
       // Dashboard layout
       {

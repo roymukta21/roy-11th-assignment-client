@@ -4,7 +4,8 @@ import useAuth from "./useAuth";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: "https://local-chef-bazaar-server-wine.vercel.app",
+ // baseURL: "https://local-chef-bazaar-server-wine.vercel.app",
+ baseURL: "http://localhost:5000"
 });
 const useAxiosSecure = () => {
   const { user, logOut } = useAuth();

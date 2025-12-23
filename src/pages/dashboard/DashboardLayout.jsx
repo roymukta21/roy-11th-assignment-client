@@ -163,16 +163,7 @@ const DashboardLayout = () => {
             </ul>
           </nav>
 
-          {/* Logout */}
-          <div className="p-4 border-t">
-            <button
-              onClick={handleSingOut}
-              className="flex items-center gap-3 px-4 py-3 w-full cursor-pointer text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            >
-              <LogOut size={20} />
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
+         
         </div>
       </aside>
 
