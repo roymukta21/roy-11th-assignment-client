@@ -127,7 +127,7 @@ export default function Navbar() {
                   className="cursor-pointer"
                 >
                   <img
-                    src={user.photoURL || "https://i.ibb.co/8xM1d0B/avatar.png"}
+                    src={user.photoURL}
                     className="w-10 h-10 rounded-full"
                     alt="avatar"
                   />

@@ -35,7 +35,7 @@ const DashboardLayout = () => {
     { path: "/", icon: House, label: "Home" },
     { path: "/dashboard", icon: UserRound, label: "My Profile" },
     { path: "/dashboard/orders", icon: ShoppingBag, label: "My Orders" },
-    { path: "/dashboard/user/my-reviews", icon: Star, label: "My Reviews" },
+    { path: "/dashboard/reviews", icon: Star, label: "My Reviews" },
     { path: "/dashboard/favorites", icon: Heart, label: "Favorite Meals" },
   ];
 

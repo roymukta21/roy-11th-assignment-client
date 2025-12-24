@@ -37,6 +37,7 @@ const MealDetails = () => {
   // get reviews data from database
   const { data: reviews = [], refetch } = useQuery({
     queryKey: ["meals-reviews", id],
+    enabled: !!user?.email,   // ✅ VERY IMPORTANT
     queryFn: async () => {
       const res = await axiosSecure.get(`/meals-reviews/${id}`);
       return res.data;
@@ -101,11 +102,11 @@ const MealDetails = () => {
   const handlePayment = async () => {
     const paymentInfo = {
       price: meal.price,
-      mealName: meal.name,
+      mealName: meal.foodName,
       orderId: meal._id,
       userEmail: user?.email,
     };
-
+console.log(paymentInfo)
     try {
       const res = await axiosSecure.post(
         "/create-checkout-session",
@@ -113,7 +114,7 @@ const MealDetails = () => {
       );
       console.log(res.data);
 
-      // window.location.replace(res.data.result.url);
+     window.location.replace(res.data.url);
     } catch (error) {
       console.log(error);
     }
