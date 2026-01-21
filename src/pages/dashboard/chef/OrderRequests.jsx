@@ -12,7 +12,7 @@ export default function OrderRequests() {
 
   const fetchOrders = async () => {
     const res = await axios.get(
-      `https://local-chef-bazaar-server-wine.vercel.app/chef/orders?chefId=${chefId}`,
+      `http://localhost:5000/chef/orders?chefId=${chefId}`,
       { withCredentials: true }
     );
     setOrders(res.data);
@@ -23,7 +23,7 @@ export default function OrderRequests() {
   }, [chefId]);
   const updateStatus = async (id, status) => {
     await axios.patch(
-      `https://local-chef-bazaar-server-wine.vercel.app/orders/${id}`,
+      `http://localhost:5000/orders/${id}`,
       { status },
       { withCredentials: true }
     );

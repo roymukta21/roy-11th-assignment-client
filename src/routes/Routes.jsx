@@ -1,6 +1,6 @@
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
-import Home from "../pages/Home.jsx";
+//import Home from "../pages/Home.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layouts/RootLayout.jsx";
@@ -20,6 +20,7 @@ import ManageUsers from "../pages/dashboard/admin/ManageUsers.jsx";
 import ManageRequests from "../pages/dashboard/admin/ManageRequests.jsx";
 import OrderRequests from "../pages/dashboard/chef/OrderRequests.jsx";
 import MealDetails from "../pages/MealDetails.jsx";
+import Home from "../pages/Home/Home.jsx";
 
 
 const router = createBrowserRouter([
@@ -47,7 +48,10 @@ const router = createBrowserRouter([
         path: "/meals-details/:id",
         Component: MealDetails
       },
-      // Dashboard layout
+      
+    ],
+  },
+  // Dashboard layout
       {
         path: "/dashboard",
         element: (
@@ -110,8 +114,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-    ],
-  },
 ]);
 
 export default router;

@@ -37,7 +37,7 @@ const MealDetails = () => {
   // get reviews data from database
   const { data: reviews = [], refetch } = useQuery({
     queryKey: ["meals-reviews", id],
-    enabled: !!user?.email,   // ✅ VERY IMPORTANT
+    enabled: !!user?.email,  
     queryFn: async () => {
       const res = await axiosSecure.get(`/meals-reviews/${id}`);
       return res.data;
@@ -159,7 +159,6 @@ console.log(paymentInfo)
                   {meal.estimatedDeliveryTime}
                 </span>
               </p>
-
               <p className="text-gray-600 flex">
                 <TbToolsKitchen3 className="mt-0.5 mr-2 text-2xl text-primary" />{" "}
                 Ingredients: {meal.ingredients}
@@ -174,6 +173,7 @@ console.log(paymentInfo)
                 <span className="text-primary ml-2 font-semibold">
                   ID: ({meal.chefId})
                 </span>
+                
               </p>
               <p className=" text-gray-600 ml-8">
                 Chef Experience:{" "}
