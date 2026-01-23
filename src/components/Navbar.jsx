@@ -2,10 +2,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { Menu, X, LogOut, LayoutDashboard, UserCircle } from "lucide-react";
 import { IoHome } from "react-icons/io5";
-import { AuthContext } from "../context/AuthContext";
+//import { AuthContext } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebase.config";
 import toast from "react-hot-toast";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function Navbar() {
   const { user } = useContext(AuthContext);
@@ -61,7 +62,10 @@ export default function Navbar() {
   const menuItems = [
     { name: "Home", path: "/", icon: IoHome },
     { name: "Meals", path: "/meals" },
-    ...(user ? [{ name: "Dashboard", path: "/dashboard", icon: LayoutDashboard }] : []),
+    { name: "AboutUs", path:"/aboutUs" },
+    ...(user ? [{ name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+       { name: "Favorites", path: "/dashboard/favorites" }
+    ] : []),
   ];
 
   return (
@@ -72,7 +76,7 @@ export default function Navbar() {
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-2">
             <img className="w-8" src="/localChefBazaar.png" alt="logo" />
-            <span className="text-xl font-bold text-gray-800">
+            <span className="text-lg font-bold text-orange-500">
               LocalChefBazaar
             </span>
           </Link>
@@ -153,7 +157,7 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <div className="hidden sm:flex gap-2">
+              <div className=" sm:flex gap-2">
                 <Link
                   to="/login"
                   className="border border-orange-500 text-orange-500 px-4 py-2 rounded"

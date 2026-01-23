@@ -1,10 +1,10 @@
 import axios from "axios";
-import React, { useContext, useEffect } from "react";
+import React, {useEffect } from "react";
 import useAuth from "./useAuth"
 
 const axiosInstance = axios.create({
- baseURL: "http://localhost:5000",
- //baseURL: "https://local-chef-bazaar-server-wine.vercel.app",
+ //baseURL: "http://localhost:5000",
+ baseURL: "https://local-chef-bazaar-server-wine.vercel.app",
 
 });
 

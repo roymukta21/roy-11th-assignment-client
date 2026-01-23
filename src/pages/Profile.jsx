@@ -46,9 +46,9 @@ const Profile = () => {
   //console.log(user)
   return (
     <div>
-      <title>LocalChefBazzar::My Profile</title>
+      <title>LocalChefBazzar:My Profile</title>
       <div className="mb-6 mt-12 lg:mt-0">
-        <h1 className="text-3xl font-bold text-orange-400 text-center">
+        <h1 className="text-3xl font-bold text-orange-500 text-center">
           My Profile
         </h1>
       </div>

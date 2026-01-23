@@ -21,6 +21,7 @@ import ManageRequests from "../pages/dashboard/admin/ManageRequests.jsx";
 import OrderRequests from "../pages/dashboard/chef/OrderRequests.jsx";
 import MealDetails from "../pages/MealDetails.jsx";
 import Home from "../pages/Home/Home.jsx";
+import AboutUs from "../components/AboutUs.jsx";
 
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/meals-details/:id",
         Component: MealDetails
+      },
+      {
+        path: "/aboutUs",
+        Component: AboutUs
       },
       
     ],

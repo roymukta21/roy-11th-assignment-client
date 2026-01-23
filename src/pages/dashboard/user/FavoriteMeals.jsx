@@ -53,11 +53,11 @@ const FavoriteMeals = () => {
     <div>
       <title>Most Favorite Meals</title>
       <div className="mb-6 mt-12 lg:mt-0">
-        <h1 className="text-3xl font-bold text-gray-800 ">Favorite Meals</h1>
+        <h1 className="text-3xl font-bold text-orange-500 ">Favorite Meals</h1>
       </div>
       {favorites.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <p className="text-gray-500 text-lg">No Favorite Meals found</p>
+          <p className="text-orange-500 text-lg">No Favorite Meals found</p>
         </div>
       ) : (
         <div className="grid gap-4">

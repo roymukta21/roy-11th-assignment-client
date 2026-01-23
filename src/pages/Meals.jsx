@@ -22,7 +22,7 @@ const Meals = () => {
     queryKey: ["meals", search, sort, page],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/meals?search=${search}&sort=${sort}&page=${page}&limit=${limit}`
+        `/meals?search=${search}&sort=${sort}&page=${page}&limit=${limit}`,
       );
       return res.data;
     },
@@ -57,20 +57,19 @@ const Meals = () => {
           </div>
 
           {/* Search */}
-          <div className="col-span-8 md:col-span-6 lg:col-span-8 mx-auto flex items-center border pl-4 gap-2 bg-white border-gray-500/30 h-[46px] rounded-full max-w-md w-full">
-            <input
-              type="search"
-              placeholder="Search meals..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full h-full outline-none text-sm text-gray-500"
-            />
-            <button className="bg-primary w-32 h-9 rounded-full text-sm text-white mr-1">
-              Search
-            </button>
+          <div className="col-span-8 md:col-span-6 lg:col-span-8 mx-auto">
+            <div className="flex items-center gap-2 border px-4 rounded-full h-[46px] bg-white dark:bg-gray-800 border-gray-400/40 dark:border-gray-600 w-full">
+              <input
+                type="text"
+                placeholder="Search meals..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full bg-transparent outline-none text-gray-700 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              />
+            </div>
           </div>
 
           {/* Sort */}
@@ -87,8 +86,23 @@ const Meals = () => {
               <option value="low">Low - High</option>
               <option value="high">High - Low</option>
             </select>
+            {/* <select
+              onChange={(e) => setSort(e.target.value)}
+              className="select select-bordered cursor-pointer w-full"
+            >
+              <option value="">Sort By</option>
+              <option value="experienceLevel"> Experience (High → Low)</option>
+            </select> */}
           </div>
         </div>
+        {/* <div>
+          <input
+          type="text"
+          placeholder="Search by meal..."
+          className="border p-2 rounded bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        </div> */}
 
         {/* Content */}
         {isLoading ? (

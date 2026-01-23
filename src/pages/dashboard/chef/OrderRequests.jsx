@@ -1,85 +1,154 @@
-//import { useEffect, useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
-import useAuth from "../../../hooks/useAuth";
-import { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+//import useUser from "../../hooks/useUser";
+import { format } from "date-fns";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Loading from "../../../components/Loading";
+import useUser from "../../../hooks/useUser";
 
-export default function OrderRequests() {
-  const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
+const OrderRequests = () => {
+  const axiosSecure = useAxiosSecure();
+  const { chefId } = useUser();
 
-  const chefId = `CHEF-${user?.uid?.slice(0, 6)}`;
+  const {
+    data: orders = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["orders", chefId],
+    enabled: !!chefId,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/orders?chefId=${chefId}`);
+      return res.data;
+    },
+  });
 
-  const fetchOrders = async () => {
-    const res = await axios.get(
-      `http://localhost:5000/chef/orders?chefId=${chefId}`,
-      { withCredentials: true }
-    );
-    setOrders(res.data);
+  const updateOrderStatus = (id, newStatus) => {
+    Swal.fire({
+      title: "Confirm Status Change",
+      text: `Do you want to set this order as "${newStatus}"?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, update it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.patch(`/orders/${id}`, { status: newStatus }).then((res) => {
+          if (res.data.success) {
+            refetch();
+            Swal.fire({
+              title: "Updated!",
+              text: "Order status changed successfully",
+              icon: "success",
+            });
+          }
+        });
+      }
+    });
   };
 
-  useEffect(() => {
-    if (chefId) fetchOrders();
-  }, [chefId]);
-  const updateStatus = async (id, status) => {
-    await axios.patch(
-      `http://localhost:5000/orders/${id}`,
-      { status },
-      { withCredentials: true }
-    );
-    toast.success(`Order ${status}`);
-    fetchOrders(); // live update
-  };
-
-  const isDisabled = (order) => order.orderStatus === "cancelled" || order.orderStatus === "delivered";
+  if (isLoading) return <Loading />;
 
   return (
-    <div className="max-w-6xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-6">Order Requests</h2>
+    <div className="mt-10">
+      <title>Local Chef Bazzar | Orders</title>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {orders.map((order) => (
-          <div key={order._id} className="card bg-base-100 shadow">
-            <div className="card-body space-y-2">
-              <h3 className="text-xl font-semibold">{order.foodName}</h3>
-              <p><strong>Price:</strong> ৳{order.price}</p>
-              <p><strong>Quantity:</strong> {order.quantity}</p>
-              <p><strong>Status:</strong> {order.orderStatus}</p>
-              <p><strong>Payment:</strong> {order.paymentStatus}</p>
-              <p><strong>User Email:</strong> {order.userEmail}</p>
-              <p><strong>Address:</strong> {order.userAddress || "N/A"}</p>
-              <p><strong>Order Time:</strong> {new Date(order.orderTime).toLocaleString()}</p>
+      <h1 className="text-3xl font-bold text-gray-800 mb-8">
+        Chef Order Requests
+      </h1>
 
-              <div className="flex gap-2 pt-3">
-                <button
-                  disabled={isDisabled(order) || order.orderStatus !== "pending"}
-                  onClick={() => updateStatus(order._id, "cancelled")}
-                  className="btn btn-error btn-sm"
-                >
-                  Cancel
-                </button>
+      {orders.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <p className="text-gray-500 text-lg">
+            No new orders available at the moment.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {orders.map((order) => {
+            const { _id, mealName, quantity, price, orderStatus, userEmail, deliveryAddress, orderTime, paymentStatus } = order;
 
-                <button
-                  disabled={isDisabled(order) || order.orderStatus !== "pending"}
-                  onClick={() => updateStatus(order._id, "accepted")}
-                  className="btn btn-primary btn-sm"
-                >
-                  Accept
-                </button>
+            return (
+              <div key={_id} className="bg-white rounded-lg shadow p-6 border border-orange-100">
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
+                  
+                  {/* Order Details */}
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-2xl text-orange-700">{mealName}</h3>
+                    <p className="text-sm mt-1 font-medium">{quantity} portions • ৳{price}</p>
 
-                <button
-                  disabled={order.orderStatus !== "accepted"}
-                  onClick={() => updateStatus(order._id, "delivered")}
-                  className="btn btn-success btn-sm"
-                >
-                  Deliver
-                </button>
+                    <p className="text-sm mt-1">
+                      Status:
+                      <span
+                        className={`ml-2 font-semibold ${
+                          orderStatus === "delivered"
+                            ? "status-success"
+                            : orderStatus === "cancelled"
+                            ? "status-error"
+                            : "status-pending"
+                        }`}
+                      >
+                        {orderStatus}
+                      </span>
+                    </p>
+
+                    <p className="text-sm text-gray-500 mt-2">Customer: {userEmail}</p>
+
+                    <p className="text-sm mt-1">
+                      Delivery: <span className="font-semibold ml-1">{deliveryAddress}</span>
+                    </p>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                      Ordered on: {format(new Date(orderTime), "dd MMM yyyy, hh:mm a")}
+                    </p>
+
+                    <p className="text-sm mt-2">
+                      Payment Status:
+                      <span
+                        className={`ml-2 font-semibold ${
+                          paymentStatus === "paid" ? "status-success" : "status-pending"
+                        }`}
+                      >
+                        {paymentStatus}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 self-center mt-4 sm:mt-0 flex-wrap">
+                    {orderStatus === "delivered" && <span className="status-success">Delivered</span>}
+                    {orderStatus === "cancelled" && <span className="status-error">Cancelled</span>}
+
+                    {orderStatus !== "delivered" && orderStatus !== "cancelled" && (
+                      <>
+                        {orderStatus === "accepted" ? (
+                          <button disabled className="success-btn">Accepted</button>
+                        ) : (
+                          <button onClick={() => updateOrderStatus(_id, "accepted")} className="primary-btn">
+                            Accept
+                          </button>
+                        )}
+
+                        <button onClick={() => updateOrderStatus(_id, "delivered")} className="success-btn">
+                          Mark as Delivered
+                        </button>
+
+                        {orderStatus !== "accepted" && (
+                          <button onClick={() => updateOrderStatus(_id, "cancelled")} className="danger-btn">
+                            Cancel
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
-}
+};
 
+export default OrderRequests;

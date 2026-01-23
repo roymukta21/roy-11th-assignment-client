@@ -26,6 +26,7 @@ const MealCard = ({ meal }) => {
           <div>
             <p className="font-semibold text-gray-700">{meal.chefName}</p>
             <p className="text-xs text-gray-500">Chef ID: {meal.chefId}</p>
+            <p className="text-xs text-gray-500">Food Name: {meal.foodName}</p>
           </div>
         </div>
 

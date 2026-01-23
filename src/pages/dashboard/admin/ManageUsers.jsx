@@ -58,7 +58,7 @@ const ManageUsers = () => {
   }
 
   return (
-    <div>
+    <div className="">
       <title>LocalChefBazaar Users Manage</title>
       <div className="mb-6 mt-12 lg:mt-0">
         <h1 className="text-3xl font-bold text-gray-800 ">Manage Users</h1>
@@ -68,7 +68,7 @@ const ManageUsers = () => {
           <p className="text-gray-500 text-lg">No Users found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-orange-50 p-8 rounded-3xl border hover:shadow-xl transition">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">

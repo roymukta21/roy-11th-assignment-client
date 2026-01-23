@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUser from "../../../hooks/useUser";
+import axios from "axios";
 
 const CreateMeal = () => {
   const axiosSecure = useAxiosSecure();
@@ -29,13 +30,20 @@ const CreateMeal = () => {
       formData.append("image", profileImg);
 
       const imageApiUrl = `https://api.imgbb.com/1/upload?key=${
-        import.meta.env.VITE_image_host
+        import.meta.env.VITE_IMAGE_HOSTING_KEY
       }`;
 
-      const imgRes = await axiosSecure.post(imageApiUrl, formData);
+      // ❗ IMPORTANT: axiosSecure NOT allowed (it adds Authorization)
+      // So use normal axios
+      const imgRes = await axios.post(imageApiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       const photoURL = imgRes.data.data.url;
 
-      //  meal data post
+      // meal data post
       const mealData = {
         chefEmail: users?.email,
         chefName: users?.displayName,
@@ -49,7 +57,7 @@ const CreateMeal = () => {
         chefExperience: data.chefExperience,
       };
 
-      //  save meal
+      // save meal
       await axiosSecure.post("/meals", mealData);
 
       toast.update(toastId, {
@@ -62,6 +70,7 @@ const CreateMeal = () => {
       reset();
       navigate("/dashboard/my-meals");
     } catch (error) {
+      console.log(error);
       toast.update(toastId, {
         render:
           error.response?.data?.message ||
@@ -74,6 +83,7 @@ const CreateMeal = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center py-10">
       <title> Create your Meals</title>
@@ -82,7 +92,6 @@ const CreateMeal = () => {
           🍴 Create a New Meal
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          
           {/* Food Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700">

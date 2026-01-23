@@ -125,7 +125,7 @@ console.log(paymentInfo)
   }
 
   return (
-    <div className="w-11/12 md:max-w-9/12 mx-auto overflow-hidden">
+    <div className="bg-orange-50 p-8 rounded-3xl border hover:shadow-xl transition">
       <Reveal>
         {/* Food Image */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -146,7 +146,7 @@ console.log(paymentInfo)
               <p className="text-lg font-semibold text-primary">
                 Price: ${meal.price}
               </p>
-              <p className="flex items-center mt-3 font-semibold">
+              <p className="flex items-center mt-3 font-semibold text-gray-800">
                 <FaStar className="mr-2 text-primary" /> Rating: {meal.rating}
               </p>
               <p className="flex items-center text-gray-600">
